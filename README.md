@@ -1,7 +1,7 @@
-# Playlist OTT
+﻿# Playlist OTT
 
 Playlist M3U gabungan siaran percuma (free-to-air dan FAST) yang disemak live.
-Disusun ikut kategori **MOVIES → KIDS → ENTERTAINMENT → SPORTS → lain-lain**, dengan channel dari
+Disusun ikut kategori **MOVIES â†’ KIDS â†’ ENTERTAINMENT â†’ SPORTS â†’ lain-lain**, dengan channel dari
 Malaysia, Indonesia, Singapura, Australia dan Brunei didahulukan dalam setiap kategori.
 
 ## Guna dalam OTT / player
@@ -9,7 +9,7 @@ Malaysia, Indonesia, Singapura, Australia dan Brunei didahulukan dalam setiap ka
 Masukkan URL raw ini dalam player (TiviMate, IPTV Smarters, VLC, Kodi dan lain-lain):
 
 ```
-https://raw.githubusercontent.com/<username>/<repo>/main/playlist_live.m3u
+https://raw.githubusercontent.com/dexxia/mkbdk/main/playlist_live.m3u
 ```
 
 ## Kemas kini playlist
