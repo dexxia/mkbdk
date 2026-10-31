@@ -13,11 +13,21 @@ Masukkan URL raw ini dalam player (TiviMate, IPTV Smarters, VLC, Kodi dan lain-l
 https://raw.githubusercontent.com/dexxia/mkbdk/main/playlist_live.m3u
 ```
 
-## Kemas kini playlist
+## Kemas kini automatik
+
+GitHub Actions ([update-playlist.yml](.github/workflows/update-playlist.yml)) menjana semula playlist
+setiap hari jam 04:00 waktu Malaysia dan push jika ada perubahan. Untuk jalankan sekarang: tab
+**Actions → Kemas kini playlist → Run workflow**.
+
+Nota: pelayan GitHub Actions berada di luar negara (biasanya AS), jadi channel yang geo-block untuk
+Malaysia/Australia mungkin tercicir manakala channel AS lebih banyak lulus.
+
+## Kemas kini manual
 
 ```bash
 python gabung_playlist.py --deep --subs-only --workers 120 --timeout 8 --retries 1
-git add playlist_live.m3u
+git pull
+git add playlist_live.m3u laporan_channel.csv
 git commit -m "Kemas kini playlist"
 git push
 ```

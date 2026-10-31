@@ -1,0 +1,52 @@
+name: Kemas kini playlist
+
+on:
+  schedule:
+    - cron: "0 20 * * *"   # setiap hari 20:00 UTC = 04:00 waktu Malaysia
+  workflow_dispatch:         # boleh juga dijalankan secara manual dari tab Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-playlist
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pasang FFmpeg (untuk ffprobe)
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+
+      - name: Jana playlist
+        run: python gabung_playlist.py --deep --subs-only --workers 120 --timeout 8 --retries 1
+
+      - name: Semak hasil
+        # Jangan tulis ganti playlist dengan fail kosong jika semua sumber gagal
+        run: |
+          count=$(grep -c '^#EXTINF' playlist_live.m3u || true)
+          echo "Channel dalam playlist: $count"
+          if [ "$count" -lt 100 ]; then
+            echo "::error::Hanya $count channel; playlist tidak dikemas kini."
+            exit 1
+          fi
+
+      - name: Commit dan push jika berubah
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898242+github-actions[bot]@users.noreply.github.com"
+          git add playlist_live.m3u laporan_channel.csv
+          if git diff --cached --quiet; then
+            echo "Tiada perubahan."
+          else
+            git commit -m "Kemas kini playlist automatik $(date -u +%Y-%m-%d)"
+            git push
+          fi
