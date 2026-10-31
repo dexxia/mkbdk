@@ -15,13 +15,15 @@ https://raw.githubusercontent.com/dexxia/mkbdk/main/playlist_live.m3u
 ## Kemas kini playlist
 
 ```bash
-python gabung_playlist.py --workers 120 --timeout 8 --retries 1
+python gabung_playlist.py --deep --workers 120 --timeout 8 --retries 1
 git add playlist_live.m3u
 git commit -m "Kemas kini playlist"
 git push
 ```
 
 - `sources.txt`: senarai sumber playlist (satu URL setiap baris)
+- `--deep`: buka setiap stream dengan ffprobe (perlu FFmpeg) untuk pastikan boleh dimainkan dan kesan subtitle/CC
+- `--subs-only`: simpan channel bersubtitle MS/ID/EN (atau CC) sahaja; `--sub-langs` untuk tukar bahasa
 - `--main-only`: simpan MOVIES, KIDS, ENTERTAINMENT, SPORTS sahaja
 - `--priority my,id,sg,au,bn`: susunan negara keutamaan
 
