@@ -1,0 +1,51 @@
+# Letak URL playlist M3U atau path fail .m3u di sini, satu setiap baris.
+# Baris bermula '#' diabaikan — buang '#' untuk aktifkan sumber pilihan.
+# Semua sumber di bawah ialah siaran percuma awam (free-to-air) yang dikumpul
+# oleh projek sumber terbuka iptv-org dan Free-TV.
+
+# --- Serantau (Malaysia & jiran) ---
+https://iptv-org.github.io/iptv/countries/my.m3u
+https://iptv-org.github.io/iptv/countries/sg.m3u
+https://iptv-org.github.io/iptv/countries/bn.m3u
+https://iptv-org.github.io/iptv/countries/id.m3u
+https://iptv-org.github.io/iptv/countries/au.m3u
+https://iptv-org.github.io/iptv/languages/msa.m3u
+
+# --- Kategori utama ---
+https://iptv-org.github.io/iptv/categories/movies.m3u
+https://iptv-org.github.io/iptv/categories/kids.m3u
+https://iptv-org.github.io/iptv/categories/animation.m3u
+https://iptv-org.github.io/iptv/categories/entertainment.m3u
+https://iptv-org.github.io/iptv/categories/sports.m3u
+
+# --- Kategori lain ---
+https://iptv-org.github.io/iptv/categories/news.m3u
+https://iptv-org.github.io/iptv/categories/documentary.m3u
+
+# --- TV percuma Australia (Seven, Nine, 10, ABC, SBS mengikut bandar) ---
+https://i.mjh.nz/au/all/raw-tv.m3u8
+
+# --- FAST: channel percuma dibiayai iklan (Samsung TV Plus, Pluto, Plex, Roku, dll.) ---
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/au_samsung.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/nz_samsung.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/in_samsung.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/uk_samsung.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/uk_pluto.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/uk_rakuten.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/uk_sportstribal.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/us_samsung.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/us_pluto.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/us_plex.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/us_roku.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/us_tubi.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/us_xumo.m3u
+https://raw.githubusercontent.com/iptv-org/iptv/master/streams/us_distro.m3u
+
+# --- Free-TV: senarai channel percuma yang disusun secara manual ---
+https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8
+
+# --- Pilihan (besar, kebanyakan luar negara) ---
+# https://iptv-org.github.io/iptv/categories/religious.m3u
+# https://iptv-org.github.io/iptv/categories/music.m3u
+# https://iptv-org.github.io/iptv/categories/sports.m3u
+# https://iptv-org.github.io/iptv/index.m3u
