@@ -7,13 +7,19 @@ Cara guna:
     python gabung_playlist.py                      # baca sumber dari sources.txt
     python gabung_playlist.py -s sources.txt -o live.m3u --workers 50 --timeout 8
     python gabung_playlist.py --no-check           # gabung sahaja, tak semak live
+    python gabung_playlist.py --deep               # buka setiap stream dengan ffprobe + kesan subtitle/CC
+    python gabung_playlist.py --deep --subs-only   # simpan channel bersubtitle MS/ID/EN (atau CC) sahaja
 
 sources.txt: satu URL atau path fail .m3u setiap baris. Baris bermula '#' diabaikan.
 Tiada library luar diperlukan (Python 3.8+).
 """
 import argparse
+import csv
+import json
 import re
+import shutil
 import ssl
+import subprocess
 import sys
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -37,6 +43,7 @@ class Channel:
         self.source = source
         self.attrs = dict(ATTR_RE.findall(extinf))
         self.name = extinf.rsplit(",", 1)[-1].strip() if "," in extinf else url
+        self.subs = set()             # label subtitle yang dikesan: EN, MS, ID, CC, ...
 
     def headers(self):
         h = {"User-Agent": self.attrs.get("user-agent") or DEFAULT_UA}
@@ -75,6 +82,16 @@ class Channel:
             self.extinf = f'{head} group-title="{group}"{sep}{name}' if sep else self.extinf
         self.attrs["group-title"] = group
 
+    def wanted_subs(self, langs):
+        """Subtitle dalam bahasa pilihan, dan closed captions (CC) yang biasanya English."""
+        return sorted(s for s in self.subs if s in langs or s == "CC" or s[3:] in langs and s.startswith("CC-"))
+
+    def tag_subs(self, langs):
+        """Tambah tanda subtitle pada nama, contoh 'HBO [SUB EN/MS]', supaya nampak dalam player."""
+        found = self.wanted_subs(langs)
+        if found:
+            self.extinf = f"{self.extinf} [SUB {'/'.join(found)}]"
+
     def to_m3u(self):
         return "\n".join([self.extinf, *self.options, self.url])
 
@@ -104,7 +121,6 @@ CHANNEL_DB_URL = "https://iptv-org.github.io/api/channels.json"
 
 
 def load_channel_db(timeout):
-    import json
     try:
         for c in json.loads(fetch_text(CHANNEL_DB_URL, timeout)):
             CHANNEL_DB[c["id"]] = c
@@ -132,7 +148,8 @@ def categorize(ch, priority):
 
 
 def organize(channels, priority, main_only=False):
-    """Set group-title ikut kategori, dan susun: kategori utama dulu, negara keutamaan dulu."""
+    """Set group-title ikut kategori, dan susun: kategori utama dulu, negara keutamaan dulu,
+    kemudian channel yang ada subtitle."""
     rank = {c: i for i, c in enumerate(priority)}
     result = []
     for ch in channels:
@@ -143,6 +160,7 @@ def organize(channels, priority, main_only=False):
         result.append(ch)
     result.sort(key=lambda ch: (CATEGORY_ORDER.index(ch.attrs["group-title"]),
                                 rank.get(ch.country(), len(priority)),
+                                0 if ch.subs else 1,
                                 ch.name.lower()))
     return result
 
@@ -174,43 +192,96 @@ def parse_m3u(text, source):
     return channels
 
 
-def is_live(ch, timeout):
-    """True jika stream boleh dibuka dan nampak macam video/HLS sebenar."""
-    url = ch.url
+# Kod bahasa subtitle -> label pendek (ISO 639-1/2 dan variasi biasa)
+LANG_LABELS = {
+    "en": "EN", "eng": "EN", "english": "EN",
+    "ms": "MS", "msa": "MS", "may": "MS", "zsm": "MS", "malay": "MS", "melayu": "MS",
+    "id": "ID", "ind": "ID", "indonesian": "ID", "bahasa": "ID",
+}
+MEDIA_TAG = re.compile(r"#EXT-X-MEDIA:(.*)")
+
+
+def lang_label(lang):
+    lang = (lang or "").strip().lower()
+    return LANG_LABELS.get(lang) or LANG_LABELS.get(lang.split("-")[0]) or (lang.upper() or "?")
+
+
+def http_get(url, headers, timeout, size):
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
+        return (r.headers.get("Content-Type") or "").lower(), r.read(size), r.geturl()
+
+
+def probe(ch, timeout):
+    """Semak stream boleh dimuat: ikut HLS sampai ke segmen video sebenar dan muat turun sedikit.
+
+    Pulangkan (ok, url_media, set_subtitle). Subtitle dibaca dari tag #EXT-X-MEDIA dalam master playlist.
+    """
+    url, subs = ch.url, set()
     if not url.lower().startswith(("http://", "https://")):
-        return True  # rtmp/udp dll. tak boleh disemak dengan HTTP; simpan saja
+        return True, url, subs  # rtmp/udp dll. tak boleh disemak dengan HTTP; simpan saja
     headers = ch.headers()
     try:
-        for _ in range(3):  # ikut master playlist -> variant playlist
-            req = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
-                if r.status >= 400:
-                    return False
-                ctype = (r.headers.get("Content-Type") or "").lower()
-                head = r.read(4096)
-                final_url = r.geturl()
-            text = head.decode("utf-8", errors="ignore")
-            if text.lstrip().startswith("#EXTM3U"):
-                # Playlist HLS: semak ada segmen/variant, dan ikut satu tahap ke bawah
-                nxt = next((l.strip() for l in text.splitlines()
-                            if l.strip() and not l.startswith("#")), None)
-                if nxt is None:
-                    return False
-                if "#EXT-X-STREAM-INF" in text:
-                    url = urljoin(final_url, nxt)
-                    continue
-                return True
-            if any(t in ctype for t in ("text/html", "json", "xml")):
-                return False  # biasanya halaman error / login / API, bukan video
-            return len(head) > 0
-        return True
+        for _ in range(4):  # master -> variant -> segmen
+            ctype, body, final_url = http_get(url, headers, timeout, 256 * 1024)
+            text = body.decode("utf-8", errors="ignore")
+            if not text.lstrip().startswith("#EXTM3U"):
+                if any(t in ctype for t in ("text/html", "json", "xml")):
+                    return False, url, subs  # halaman error / login / API, bukan video
+                return len(body) > 0, url, subs
+            for m in MEDIA_TAG.finditer(text):
+                attrs = dict(ATTR_RE.findall(m.group(1)))
+                kind = re.search(r"TYPE=([A-Z-]+)", m.group(1))
+                if kind and kind.group(1) == "SUBTITLES":
+                    subs.add(lang_label(attrs.get("LANGUAGE") or attrs.get("NAME")))
+                elif kind and kind.group(1) == "CLOSED-CAPTIONS":
+                    subs.add("CC-" + lang_label(attrs.get("LANGUAGE")) if attrs.get("LANGUAGE") else "CC")
+            uris = [l.strip() for l in text.splitlines() if l.strip() and not l.startswith("#")]
+            if not uris:
+                return False, url, subs
+            if "#EXT-X-STREAM-INF" in text:
+                url = urljoin(final_url, uris[0])
+                continue
+            # Playlist media: muat turun segmen terkini (yang lama mungkin dah dibuang server)
+            ctype, seg, _ = http_get(urljoin(final_url, uris[-1]), headers, timeout, 2048)
+            ok = len(seg) > 0 and not any(t in ctype for t in ("text/html", "json"))
+            return ok, url, subs
+        return False, url, subs
     except Exception:
-        return False
+        return False, url, subs
 
 
-def is_live_retry(ch, timeout, retries):
+def probe_retry(ch, timeout, retries):
     """Server IPTV selalu putus sekejap; cuba beberapa kali sebelum anggap mati."""
-    return any(is_live(ch, timeout) for _ in range(retries + 1))
+    for _ in range(retries + 1):
+        result = probe(ch, timeout)
+        if result[0]:
+            return result
+    return result
+
+
+def ffprobe_check(ch, url, timeout, ffprobe):
+    """Buka stream dengan ffprobe. Pulangkan (ok, set_subtitle): ok jika ada trek video/audio yang boleh dibaca."""
+    h = ch.headers()
+    cmd = [ffprobe, "-v", "error", "-rw_timeout", str(int(timeout * 1_000_000)),
+           "-user_agent", h["User-Agent"], "-probesize", "3000000", "-analyzeduration", "4000000"]
+    if "Referer" in h:
+        cmd += ["-referer", h["Referer"]]
+    if "Origin" in h:
+        cmd += ["-headers", f"Origin: {h['Origin']}\r\n"]
+    cmd += ["-show_streams", "-of", "json", url]
+    try:
+        out = subprocess.run(cmd, capture_output=True, timeout=timeout * 3).stdout
+        streams = json.loads(out or b"{}").get("streams", [])
+    except Exception:
+        return False, set()
+    subs = set()
+    for s in streams:
+        if s.get("codec_type") == "subtitle":
+            subs.add(lang_label(s.get("tags", {}).get("language")))
+        if s.get("codec_type") == "video" and s.get("closed_captions"):
+            subs.add("CC")
+    return any(s.get("codec_type") in ("video", "audio") for s in streams), subs
 
 
 def main():
@@ -227,7 +298,16 @@ def main():
                     help="simpan MOVIES, KIDS, ENTERTAINMENT, SPORTS sahaja")
     ap.add_argument("--no-categories", action="store_true",
                     help="kekalkan group-title asal, jangan susun ikut kategori")
+    ap.add_argument("--deep", action="store_true",
+                    help="buka setiap stream dengan ffprobe: pastikan video/audio boleh dibaca dan kesan subtitle/CC")
+    ap.add_argument("--sub-langs", default="ms,id,en",
+                    help="bahasa subtitle yang dicari (default: ms,id,en)")
+    ap.add_argument("--subs-only", action="store_true",
+                    help="simpan channel yang ada subtitle bahasa pilihan (atau CC) sahaja")
+    ap.add_argument("--report", default="laporan_channel.csv",
+                    help="fail laporan CSV: kategori, negara, subtitle setiap channel (default: laporan_channel.csv)")
     args = ap.parse_args()
+    sub_langs = {lang_label(l) for l in args.sub_langs.split(",") if l.strip()}
 
     src_file = Path(args.sources)
     if not src_file.is_file():
@@ -260,15 +340,46 @@ def main():
     if args.no_check:
         live = all_channels
     else:
-        print(f"Menyemak status live ({args.workers} serentak, timeout {args.timeout}s)...")
-        results = {}
+        print(f"Menyemak status live hingga ke segmen video ({args.workers} serentak, timeout {args.timeout}s)...")
+        media_url, live = {}, []
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
-            futs = {pool.submit(is_live_retry, ch, args.timeout, args.retries): i for i, ch in enumerate(all_channels)}
+            futs = {pool.submit(probe_retry, ch, args.timeout, args.retries): ch for ch in all_channels}
             for n, fut in enumerate(as_completed(futs), 1):
-                results[futs[fut]] = fut.result()
-                if n % 50 == 0 or n == len(futs):
-                    print(f"  {n}/{len(futs)} disemak, {sum(results.values())} live")
-        live = [ch for i, ch in enumerate(all_channels) if results.get(i)]
+                ch = futs[fut]
+                ok, media_url[id(ch)], ch.subs = fut.result()
+                if ok:
+                    live.append(ch)
+                if n % 100 == 0 or n == len(futs):
+                    print(f"  {n}/{len(futs)} disemak, {len(live)} live")
+
+        ffprobe = shutil.which("ffprobe") if args.deep else None
+        if args.deep and not ffprobe:
+            print("[AMARAN] ffprobe tak dijumpai; semakan --deep dilangkau. Pasang FFmpeg untuk guna pilihan ini.")
+        if ffprobe:
+            # ffprobe lebih berat (satu proses setiap stream), jadi hadkan bilangan serentak
+            workers = min(args.workers, 32)
+            print(f"\nMembuka setiap stream dengan ffprobe ({workers} serentak)...")
+            playable = []
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                futs = {pool.submit(ffprobe_check, ch, media_url[id(ch)], args.timeout, ffprobe): ch for ch in live}
+                for n, fut in enumerate(as_completed(futs), 1):
+                    ch = futs[fut]
+                    ok, subs = fut.result()
+                    if ok:
+                        ch.subs |= subs
+                        playable.append(ch)
+                    if n % 100 == 0 or n == len(futs):
+                        print(f"  {n}/{len(futs)} dibuka, {len(playable)} boleh dimainkan")
+            live = playable
+
+    with_subs = [ch for ch in live if ch.wanted_subs(sub_langs)]
+    print(f"\nChannel dengan subtitle {'/'.join(sorted(sub_langs))} atau CC: {len(with_subs)}")
+    for label in sorted({s for ch in live for s in ch.subs}):
+        print(f"  {label:<6} {sum(label in ch.subs for ch in live)}")
+    if args.subs_only:
+        live = with_subs
+    for ch in live:
+        ch.tag_subs(sub_langs)
 
     if not args.no_categories:
         priority = [c.strip().lower() for c in args.priority.split(",") if c.strip()]
@@ -282,6 +393,14 @@ def main():
 
     out = ["#EXTM3U"] + [ch.to_m3u() for ch in live]
     Path(args.output).write_text("\n".join(out) + "\n", encoding="utf-8")
+    if args.report:
+        with open(args.report, "w", newline="", encoding="utf-8-sig") as f:
+            w = csv.writer(f)
+            w.writerow(["kategori", "negara", "nama", "subtitle", "url"])
+            for ch in live:
+                w.writerow([ch.attrs.get("group-title", ""), ch.country().upper(), ch.name,
+                            " ".join(sorted(ch.subs)), ch.url])
+        print(f"Laporan disimpan ke {args.report}")
     print(f"\nSiap: {len(live)} channel live disimpan ke {args.output}")
 
 
