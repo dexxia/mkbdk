@@ -1,7 +1,7 @@
 ﻿# Playlist OTT
 
 Playlist M3U gabungan siaran percuma (free-to-air dan FAST) yang disemak live.
-Disusun ikut kategori **MOVIES â†’ KIDS â†’ ENTERTAINMENT â†’ SPORTS â†’ lain-lain**, dengan channel dari
+Disusun ikut kategori **MOVIES → KIDS → ENTERTAINMENT → SPORTS → lain-lain**, dengan channel dari
 Malaysia, Indonesia, Singapura, Australia dan Brunei didahulukan dalam setiap kategori.
 
 ## Guna dalam OTT / player
