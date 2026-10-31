@@ -1,6 +1,7 @@
 ﻿# Playlist OTT
 
-Playlist M3U gabungan siaran percuma (free-to-air dan FAST) yang disemak live.
+Playlist M3U gabungan siaran percuma (free-to-air dan FAST) yang disemak live, dan hanya
+mengandungi channel yang ada subtitle English, Melayu atau Indonesia (atau closed captions).
 Disusun ikut kategori **MOVIES → KIDS → ENTERTAINMENT → SPORTS → lain-lain**, dengan channel dari
 Malaysia, Indonesia, Singapura, Australia dan Brunei didahulukan dalam setiap kategori.
 
@@ -15,7 +16,7 @@ https://raw.githubusercontent.com/dexxia/mkbdk/main/playlist_live.m3u
 ## Kemas kini playlist
 
 ```bash
-python gabung_playlist.py --deep --workers 120 --timeout 8 --retries 1
+python gabung_playlist.py --deep --subs-only --workers 120 --timeout 8 --retries 1
 git add playlist_live.m3u
 git commit -m "Kemas kini playlist"
 git push
