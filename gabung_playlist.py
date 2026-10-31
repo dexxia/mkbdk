@@ -333,7 +333,8 @@ def main():
     ap.add_argument("--nosub-group", action="store_true",
                     help="letak channel tanpa subtitle bahasa pilihan dalam kategori NOSUB di bawah sekali")
     ap.add_argument("--brand", default="MknbdkTV", help="nama untuk entri tajuk setiap kategori")
-    ap.add_argument("--brand-logo", default=f"{REPO_RAW}/assets/logo.png",
+    # ?v= ditukar setiap kali logo diganti supaya player tak guna logo lama dari cache
+    ap.add_argument("--brand-logo", default=f"{REPO_RAW}/assets/logo.png?v=2",
                     help="URL logo untuk entri tajuk setiap kategori")
     ap.add_argument("--brand-video", default=f"{REPO_RAW}/assets/logo.mp4",
                     help="URL video yang dimainkan bila entri tajuk dipilih")

@@ -1,5 +1,5 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png" group-title="MOVIES",★ MknbdkTV • MOVIES ★
+#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png?v=2" group-title="MOVIES",★ MknbdkTV • MOVIES ★
 https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.mp4
 #EXTINF:-1 channel-id="mjh-10-seasonalmovies" tvg-id="mjh-10-seasonalmovies" tvg-logo="https://10.com.au/ip/s3/2024/04/01/86e45216ee9df7d873e393dccb379d94-1306209.png?image-profile=logo" group-title="MOVIES" , Thriller Movies [SUB EN]
 #EXTVLCOPT:http-user-agent=otg/1.5.1 (AppleTv Apple TV 4; tvOS16.0; appletv.client) libcurl/7.58.0 OpenSSL/1.0.2o zlib/1.2.11 clib/1.8.56
@@ -417,7 +417,7 @@ https://jmp2.uk/plu-62f64ec9eb1045000728cad6.m3u8
 https://jmp2.uk/plu-62bebc3459624e00078209c3.m3u8
 #EXTINF:-1 tvg-id="ViafreeMovies.se@NO" tvg-logo="https://images.pluto.tv/channels/62bebc3459624e00078209c3/colorLogoPNG.png" group-title="MOVIES",Viafree Movies NO [SUB EN]
 https://jmp2.uk/plu-62beb44e3afd120007915d1b.m3u8
-#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png" group-title="KIDS",★ MknbdkTV • KIDS ★
+#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png?v=2" group-title="KIDS",★ MknbdkTV • KIDS ★
 https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.mp4
 #EXTINF:-1 tvg-id="ABCEntertains.au@Sydney" tvg-logo="https://upload.wikimedia.org/wikipedia/en/thumb/3/35/ABC_Entertains_logo.svg/960px-ABC_Entertains_logo.svg.png" group-title="KIDS",ABC Entertains (720p) [SUB EN]
 https://c.mjh.nz/abc-me.m3u8
@@ -721,7 +721,7 @@ https://jmp2.uk/plu-5d0c16d686454ead733d08f8.m3u8
 https://jmp2.uk/plu-62e95265c9fd030007268fb9.m3u8
 #EXTINF:-1 tvg-id="YuGiOh.us@SD" group-title="KIDS",Yu-Gi-Oh! [SUB EN]
 https://jmp2.uk/plu-5f4ec10ed9636f00089b8c89.m3u8
-#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png" group-title="ENTERTAINMENT",★ MknbdkTV • ENTERTAINMENT ★
+#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png?v=2" group-title="ENTERTAINMENT",★ MknbdkTV • ENTERTAINMENT ★
 https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.mp4
 #EXTINF:-1 channel-id="mjh-10-forty-eight-hours" tvg-id="mjh-10-forty-eight-hours" tvg-logo="https://10.com.au/ip/s3/2023/06/28/7dd910de29f31095b69e17f1da8f3f0e-1245997.png?image-profile=logo" group-title="ENTERTAINMENT" , 48 Hours [SUB EN]
 #EXTVLCOPT:http-user-agent=otg/1.5.1 (AppleTv Apple TV 4; tvOS16.0; appletv.client) libcurl/7.58.0 OpenSSL/1.0.2o zlib/1.2.11 clib/1.8.56
@@ -1853,7 +1853,7 @@ https://jmp2.uk/plu-5d14fc31252d35decbc4080b.m3u8
 https://younghollywood-rakuten-samsung.amagi.tv/playlist.m3u8
 #EXTINF:-1 tvg-id="ZenLIFEbyStingray.ca@HD" group-title="ENTERTAINMENT",ZenLIFE by Stingray [SUB EN]
 https://jmp2.uk/plu-696998dfa2b623e8b20125a3.m3u8
-#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png" group-title="SPORTS",★ MknbdkTV • SPORTS ★
+#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png?v=2" group-title="SPORTS",★ MknbdkTV • SPORTS ★
 https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.mp4
 #EXTINF:-1 tvg-id="ACCDigitalNetwork.us@SD" tvg-logo="https://i.imgur.com/V6Kaqha.png" group-title="SPORTS",ACC Digital Network (1080p) [SUB CC-EN]
 https://raycom-accdn-firetv.amagi.tv/playlist.m3u8
@@ -2089,7 +2089,7 @@ https://amg00218-wptenterprisesi-worldpokertour-xumo-us.amagi.tv/playlist.m3u8
 https://jmp2.uk/plu-5ad9b7aae738977e2c312132.m3u8
 #EXTINF:-1 tvg-id="" group-title="SPORTS",Xtreme Outdoor by HISTORY [SUB EN]
 https://jmp2.uk/plu-6000a6f4c3f8550008fc9b91.m3u8
-#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png" group-title="NEWS",★ MknbdkTV • NEWS ★
+#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png?v=2" group-title="NEWS",★ MknbdkTV • NEWS ★
 https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.mp4
 #EXTINF:-1 channel-id="mjh-abc-news" tvg-id="mjh-abc-news" tvg-logo="https://i.mjh.nz/.images/abc-news.png" tvg-chno="24" group-title="NEWS" , ABC NEWS [SUB EN]
 #EXTVLCOPT:http-user-agent=otg/1.5.1 (AppleTv Apple TV 4; tvOS16.0; appletv.client) libcurl/7.58.0 OpenSSL/1.0.2o zlib/1.2.11 clib/1.8.56
@@ -2293,7 +2293,7 @@ https://yahoo-samsung.amagi.tv/playlist.m3u8
 https://yahoo-plex.amagi.tv/playlist.m3u8
 #EXTINF:-1 tvg-id="YahooFinance.us@SD" group-title="NEWS",Yahoo! Finance (1080p) [SUB CC-EN]
 https://yahoo-roku-us.amagi.tv/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png" group-title="DOCUMENTARY",★ MknbdkTV • DOCUMENTARY ★
+#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png?v=2" group-title="DOCUMENTARY",★ MknbdkTV • DOCUMENTARY ★
 https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.mp4
 #EXTINF:-1 tvg-id="CNAOriginals.sg@SD" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/CNA_new_logo.svg/500px-CNA_new_logo.svg.png" group-title="DOCUMENTARY",CNA Originals (1080p) [SUB EN]
 https://amg01082-cna-amg01082c1-rlaxx-us-11304.playouts.now.amagi.tv/playlist.m3u8
@@ -2445,13 +2445,13 @@ https://lds-wonder-plex.amagi.tv/playlist.m3u8
 https://lds-wonder-samsungau.amagi.tv/playlist.m3u8
 #EXTINF:-1 tvg-id="Wonder.uk@SD" group-title="DOCUMENTARY",Wonder (720p) [SUB EN]
 https://wonder-samsung-uk.amagi.tv/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png" group-title="RELIGIOUS",★ MknbdkTV • RELIGIOUS ★
+#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png?v=2" group-title="RELIGIOUS",★ MknbdkTV • RELIGIOUS ★
 https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.mp4
 #EXTINF:-1 tvg-id="MissionAsia.au@SD" tvg-logo="https://i.imgur.com/B5mKwF6.png" group-title="RELIGIOUS",Mission Asia (1080p) [SUB CC-EN]
 https://livecdn.live247stream.com/missionasia/tv/playlist.m3u8
 #EXTINF:-1 tvg-id="JoelOsteenNetwork.us@HD" group-title="RELIGIOUS",Joel Osteen Network (1080p) [SUB CC-EN/EN]
 https://linear-860.frequency.stream/dist/xumo/860/hls/master/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png" group-title="LAIN-LAIN",★ MknbdkTV • LAIN-LAIN ★
+#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png?v=2" group-title="LAIN-LAIN",★ MknbdkTV • LAIN-LAIN ★
 https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.mp4
 #EXTINF:-1 tvg-name="#Riccanza – Pluto TV" tvg-logo="https://i.imgur.com/oBpcWEm.png" group-title="LAIN-LAIN",#Riccanza – Pluto TV [SUB EN]
 https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/626baa721c279b00072cbedd/master.m3u8?deviceId=channel&deviceModel=web&deviceVersion=1.0&appVersion=1.0&deviceType=rokuChannel&deviceMake=rokuChannel&deviceDNT=1&advertisingId=channel&embedPartner=rokuChannel&appName=rokuchannel&is_lat=1&bmodel=bm1&content=channel&platform=web&tags=ROKU_CONTENT_TAGS&coppa=false&content_type=livefeed&rdid=channel&genre=ROKU_ADS_CONTENT_GENRE&content_rating=ROKU_ADS_CONTENT_RATING&studio_id=viacom&channel_id=channel
@@ -3323,7 +3323,7 @@ https://d3bsgqzbpkrvbb.cloudfront.net/XITE_Nuevo_Latino.m3u8
 https://d1xc25jm9e0l4b.cloudfront.net/XITE_Siempre_Latino.m3u8
 #EXTINF:-1 tvg-name="Yu-Gi-Oh! – Pluto TV" tvg-logo="https://i.imgur.com/rmzSC1C.png" group-title="LAIN-LAIN",Yu-Gi-Oh! – Pluto TV [SUB EN]
 https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/63eb82e24e83e70008ab735f/master.m3u8?deviceId=channel&deviceModel=web&deviceVersion=1.0&appVersion=1.0&deviceType=rokuChannel&deviceMake=rokuChannel&deviceDNT=1&advertisingId=channel&embedPartner=rokuChannel&appName=rokuchannel&is_lat=1&bmodel=bm1&content=channel&platform=web&tags=ROKU_CONTENT_TAGS&coppa=false&content_type=livefeed&rdid=channel&genre=ROKU_ADS_CONTENT_GENRE&content_rating=ROKU_ADS_CONTENT_RATING&studio_id=viacom&channel_id=channel
-#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png" group-title="NOSUB",★ MknbdkTV • NOSUB ★
+#EXTINF:-1 tvg-id="" tvg-logo="https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.png?v=2" group-title="NOSUB",★ MknbdkTV • NOSUB ★
 https://raw.githubusercontent.com/dexxia/mkbdk/main/assets/logo.mp4
 #EXTINF:-1 tvg-id="MaahTV.my@SD" tvg-logo="https://i.imgur.com/FkyueH6.png" group-title="NOSUB",Maah TV (720p)
 https://hls.maahtv.live/hls/stream.m3u8
