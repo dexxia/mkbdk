@@ -27,7 +27,7 @@ jobs:
         run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
 
       - name: Jana playlist
-        run: python gabung_playlist.py --deep --subs-only --workers 120 --timeout 8 --retries 1
+        run: python gabung_playlist.py --deep --nosub-group --workers 120 --timeout 8 --retries 1
 
       - name: Semak hasil
         # Jangan tulis ganti playlist dengan fail kosong jika semua sumber gagal

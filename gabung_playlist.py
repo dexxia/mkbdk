@@ -9,6 +9,7 @@ Cara guna:
     python gabung_playlist.py --no-check           # gabung sahaja, tak semak live
     python gabung_playlist.py --deep               # buka setiap stream dengan ffprobe + kesan subtitle/CC
     python gabung_playlist.py --deep --subs-only   # simpan channel bersubtitle MS/ID/EN (atau CC) sahaja
+    python gabung_playlist.py --deep --nosub-group # channel tanpa subtitle masuk kategori NOSUB di bawah
 
 sources.txt: satu URL atau path fail .m3u setiap baris. Baris bermula '#' diabaikan.
 Tiada library luar diperlukan (Python 3.8+).
@@ -26,7 +27,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import urljoin
 
-DEFAULT_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+REPO_RAW = "https://raw.githubusercontent.com/dexxia/mkbdk/main"
+DEFAULT_UA ="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 ATTR_RE = re.compile(r'([\w-]+)="([^"]*)"')
 
 # Banyak server IPTV guna sijil SSL yang tak sah; kita cuma semak sama ada stream hidup.
@@ -108,7 +110,8 @@ CATEGORY_RULES = [
     ("DOCUMENTARY", {"documentary", "science", "education"}),
     ("RELIGIOUS", {"religious"}),
 ]
-CATEGORY_ORDER = ["MOVIES", "KIDS", "ENTERTAINMENT", "SPORTS", "NEWS", "DOCUMENTARY", "RELIGIOUS", "LAIN-LAIN"]
+CATEGORY_ORDER = ["MOVIES", "KIDS", "ENTERTAINMENT", "SPORTS", "NEWS", "DOCUMENTARY", "RELIGIOUS", "LAIN-LAIN",
+                  "NOSUB"]
 MAIN_CATEGORIES = set(CATEGORY_ORDER[:4])
 CATEGORY_FROM_SOURCE = re.compile(r"/categories/([a-z]+)\.m3u")
 # Negara dari URL sumber: countries/my.m3u, streams/au_samsung.m3u, i.mjh.nz/au/...
@@ -163,6 +166,29 @@ def organize(channels, priority, main_only=False):
                                 0 if ch.subs else 1,
                                 ch.name.lower()))
     return result
+
+
+def apply_nosub(channels, langs):
+    """Pindah channel tanpa subtitle bahasa pilihan ke kategori NOSUB di bawah sekali.
+    Susunan dalam NOSUB kekal ikut kategori asal dan negara keutamaan (sort stabil)."""
+    for ch in channels:
+        if not ch.wanted_subs(langs):
+            ch.set_group("NOSUB")
+    channels.sort(key=lambda ch: CATEGORY_ORDER.index(ch.attrs["group-title"]))
+    return channels
+
+
+def brand_headers(channels, brand, logo, video):
+    """Sisip satu entri berlogo di atas setiap kategori, contoh '★ MknbdkTV • MOVIES ★'."""
+    out, current = [], None
+    for ch in channels:
+        group = ch.attrs.get("group-title", "")
+        if group != current:
+            extinf = f'#EXTINF:-1 tvg-id="" tvg-logo="{logo}" group-title="{group}",★ {brand} • {group} ★'
+            out.append(Channel(extinf, [], video, "brand"))
+            current = group
+        out.append(ch)
+    return out
 
 
 def fetch_text(src, timeout):
@@ -304,6 +330,14 @@ def main():
                     help="bahasa subtitle yang dicari (default: ms,id,en)")
     ap.add_argument("--subs-only", action="store_true",
                     help="simpan channel yang ada subtitle bahasa pilihan (atau CC) sahaja")
+    ap.add_argument("--nosub-group", action="store_true",
+                    help="letak channel tanpa subtitle bahasa pilihan dalam kategori NOSUB di bawah sekali")
+    ap.add_argument("--brand", default="MknbdkTV", help="nama untuk entri tajuk setiap kategori")
+    ap.add_argument("--brand-logo", default=f"{REPO_RAW}/assets/logo.png",
+                    help="URL logo untuk entri tajuk setiap kategori")
+    ap.add_argument("--brand-video", default=f"{REPO_RAW}/assets/logo.mp4",
+                    help="URL video yang dimainkan bila entri tajuk dipilih")
+    ap.add_argument("--no-brand", action="store_true", help="jangan tambah entri tajuk berlogo")
     ap.add_argument("--report", default="laporan_channel.csv",
                     help="fail laporan CSV: kategori, negara, subtitle setiap channel (default: laporan_channel.csv)")
     args = ap.parse_args()
@@ -384,6 +418,8 @@ def main():
     if not args.no_categories:
         priority = [c.strip().lower() for c in args.priority.split(",") if c.strip()]
         live = organize(live, priority, args.main_only)
+        if args.nosub_group and not args.subs_only:
+            live = apply_nosub(live, sub_langs)
         print("\nRingkasan kategori (jumlah / dari negara keutamaan):")
         for cat in CATEGORY_ORDER:
             in_cat = [ch for ch in live if ch.attrs["group-title"] == cat]
@@ -391,7 +427,8 @@ def main():
                 pri = sum(ch.country() in priority for ch in in_cat)
                 print(f"  {cat:<14} {len(in_cat):>5} / {pri}")
 
-    out = ["#EXTM3U"] + [ch.to_m3u() for ch in live]
+    entries = live if args.no_brand else brand_headers(live, args.brand, args.brand_logo, args.brand_video)
+    out = ["#EXTM3U"] + [ch.to_m3u() for ch in entries]
     Path(args.output).write_text("\n".join(out) + "\n", encoding="utf-8")
     if args.report:
         with open(args.report, "w", newline="", encoding="utf-8-sig") as f:

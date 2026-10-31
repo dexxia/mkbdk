@@ -1,9 +1,15 @@
 ﻿# Playlist OTT
 
-Playlist M3U gabungan siaran percuma (free-to-air dan FAST) yang disemak live, dan hanya
-mengandungi channel yang ada subtitle English, Melayu atau Indonesia (atau closed captions).
-Disusun ikut kategori **MOVIES → KIDS → ENTERTAINMENT → SPORTS → lain-lain**, dengan channel dari
-Malaysia, Indonesia, Singapura, Australia dan Brunei didahulukan dalam setiap kategori.
+![MknbdkTV](assets/logo.png)
+
+Playlist M3U gabungan siaran percuma (free-to-air dan FAST) yang disemak live.
+Disusun ikut kategori **MOVIES → KIDS → ENTERTAINMENT → SPORTS → lain-lain → NOSUB**, dengan channel
+dari Malaysia, Indonesia, Singapura, Australia dan Brunei didahulukan dalam setiap kategori.
+
+- Kategori biasa hanya mengandungi channel bersubtitle English, Melayu atau Indonesia (atau closed
+  captions), ditanda `[SUB ...]` pada nama.
+- Channel tanpa subtitle dikumpul dalam kategori **NOSUB** di bawah sekali.
+- Setiap kategori dimulakan dengan entri berlogo `★ MknbdkTV • KATEGORI ★`.
 
 ## Guna dalam OTT / player
 
@@ -25,7 +31,7 @@ Malaysia/Australia mungkin tercicir manakala channel AS lebih banyak lulus.
 ## Kemas kini manual
 
 ```bash
-python gabung_playlist.py --deep --subs-only --workers 120 --timeout 8 --retries 1
+python gabung_playlist.py --deep --nosub-group --workers 120 --timeout 8 --retries 1
 git pull
 git add playlist_live.m3u laporan_channel.csv
 git commit -m "Kemas kini playlist"
@@ -34,7 +40,9 @@ git push
 
 - `sources.txt`: senarai sumber playlist (satu URL setiap baris)
 - `--deep`: buka setiap stream dengan ffprobe (perlu FFmpeg) untuk pastikan boleh dimainkan dan kesan subtitle/CC
-- `--subs-only`: simpan channel bersubtitle MS/ID/EN (atau CC) sahaja; `--sub-langs` untuk tukar bahasa
+- `--nosub-group`: channel tanpa subtitle MS/ID/EN (atau CC) masuk kategori NOSUB; `--sub-langs` untuk tukar bahasa
+- `--subs-only`: buang terus channel tanpa subtitle (ganti NOSUB)
+- `--brand`, `--brand-logo`, `--brand-video`, `--no-brand`: entri tajuk berlogo setiap kategori
 - `--main-only`: simpan MOVIES, KIDS, ENTERTAINMENT, SPORTS sahaja
 - `--priority my,id,sg,au,bn`: susunan negara keutamaan
 
