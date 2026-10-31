@@ -179,7 +179,7 @@ def apply_nosub(channels, langs):
 
 
 def brand_headers(channels, brand, logo, video):
-    """Sisip satu entri berlogo di atas setiap kategori, contoh '★ MknbdkTV • MOVIES ★'."""
+    """Sisip satu entri berlogo di atas setiap kategori, contoh '★ NxmTV • MOVIES ★'."""
     out, current = [], None
     for ch in channels:
         group = ch.attrs.get("group-title", "")
@@ -332,7 +332,7 @@ def main():
                     help="simpan channel yang ada subtitle bahasa pilihan (atau CC) sahaja")
     ap.add_argument("--nosub-group", action="store_true",
                     help="letak channel tanpa subtitle bahasa pilihan dalam kategori NOSUB di bawah sekali")
-    ap.add_argument("--brand", default="MknbdkTV", help="nama untuk entri tajuk setiap kategori")
+    ap.add_argument("--brand", default="NxmTV", help="nama untuk entri tajuk setiap kategori")
     # ?v= ditukar setiap kali logo diganti supaya player tak guna logo lama dari cache
     ap.add_argument("--brand-logo", default=f"{REPO_RAW}/assets/logo.png?v=2",
                     help="URL logo untuk entri tajuk setiap kategori")

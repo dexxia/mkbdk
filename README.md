@@ -1,6 +1,6 @@
 ﻿# Playlist OTT
 
-![MknbdkTV](assets/logo.png)
+![NxmTV](assets/logo.png)
 
 Playlist M3U gabungan siaran percuma (free-to-air dan FAST) yang disemak live.
 Disusun ikut kategori **MOVIES → KIDS → ENTERTAINMENT → SPORTS → lain-lain → NOSUB**, dengan channel
@@ -9,7 +9,7 @@ dari Malaysia, Indonesia, Singapura, Australia dan Brunei didahulukan dalam seti
 - Kategori biasa hanya mengandungi channel bersubtitle English, Melayu atau Indonesia (atau closed
   captions), ditanda `[SUB ...]` pada nama.
 - Channel tanpa subtitle dikumpul dalam kategori **NOSUB** di bawah sekali.
-- Setiap kategori dimulakan dengan entri berlogo `★ MknbdkTV • KATEGORI ★`.
+- Setiap kategori dimulakan dengan entri berlogo `★ NxmTV • KATEGORI ★`.
 
 ## Guna dalam OTT / player
 
